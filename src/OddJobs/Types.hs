@@ -35,10 +35,12 @@ import Control.Monad.Logger (LogLevel)
 -- myJobsTable :: TableName
 -- myJobsTable = "my_jobs"
 -- @
-type TableName = PGS.Identifier
+type TableName = PGS.QualifiedIdentifier
 
 pgEventName :: TableName -> PGS.Identifier
-pgEventName tname = PGS.Identifier $ "job_created_" <> PGS.fromIdentifier tname
+-- pgEventName tname = PGS.QualifiedIdentifier $ "job_created_" <> tname
+pgEventName (PGS.QualifiedIdentifier Nothing tname) = PGS.Identifier $ "jobs_created_" <> tname
+pgEventName (PGS.QualifiedIdentifier (Just schema) tname) = PGS.Identifier $ "jobs_created_" <> schema <> tname
 
 newtype Seconds = Seconds { unSeconds :: Int } deriving (Eq, Show, Ord, Num, Read)
 
